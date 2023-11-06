@@ -15,9 +15,9 @@ const { onObjectFinalized } = require("firebase-functions/v2/storage");
 const { v4: uuidv4 } = require("uuid");
 
 admin.initializeApp();
-// Create and deploy your first functions
+// Create and deploy your function
 // https://firebase.google.com/docs/functions/get-started
-exports.importJSON = onObjectFinalized(async (event) => {
+exports.importJSON = onObjectFinalized({ maxInstances: 1 }, async (event) => {
   logger.info("processing file", { structuredData: true });
   const db = admin.firestore();
 
@@ -26,8 +26,9 @@ exports.importJSON = onObjectFinalized(async (event) => {
 
   const bucket = getStorage().bucket(fileBucket);
 
-  // Download file to memory, then convert to Json
+  // Download file to memory
   const downloadResponse = await bucket.file(filePath).download();
+  // Then convert the file to Json
   const json = JSON.parse(downloadResponse.toString());
 
   // Get batch client
