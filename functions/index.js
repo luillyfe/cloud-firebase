@@ -36,7 +36,9 @@ exports.importJSON = onObjectFinalized({ maxInstances: 1 }, async (event) => {
 
   // Perform updates
   json.forEach((todo) => {
-    const ref = db.doc(`todos/${uuidv4()}`);
+    const uuid = uuidv4();
+    todo.id = uuid;
+    const ref = db.doc(`todos/${uuid}`);
     batch.set(ref, todo);
   });
 
